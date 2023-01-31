@@ -13,7 +13,6 @@ Screen_HEIGHT = 600
 arcade.draw_lrtb_rectangle_filled(0, 400, 800, 0, arcade.csscolor.ROSY_BROWN)
 
 # Draw a smiley face
-
 arcade.draw_circle_filled(Screen_Width / 4, Screen_HEIGHT / 2, 50, arcade.color.INDIAN_YELLOW)
 
 # Left eye
@@ -42,8 +41,7 @@ arcade.draw_arc_outline(x, y, width, height, arcade.color.LIGHT_BROWN, start_ang
 arcade.draw_triangle_filled(200, 400, 190, 340, 190, 340, arcade.csscolor.DARK_GREEN)
 
 
-# Right Smile
-
+# Not smiley face
 arcade.draw_circle_filled(Screen_Width / 1, Screen_HEIGHT / 2, 50, arcade.color.INDIAN_YELLOW)
 
 # Draw the eyes
@@ -70,8 +68,6 @@ height = 10
 start_angle = 340
 end_angle = 560
 arcade.draw_arc_filled(600, 280, 18, 10, arcade.color.LIGHT_BROWN, 340, 560, 3)
-
-
 
 arcade.finish_render()
 
