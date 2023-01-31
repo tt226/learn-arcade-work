@@ -44,8 +44,6 @@ arcade.draw_triangle_filled(200, 400, 190, 340, 190, 340, arcade.csscolor.DARK_G
 # Not smiley face
 arcade.draw_circle_filled(Screen_Width / 1, Screen_HEIGHT / 2, 50, arcade.color.INDIAN_YELLOW)
 
-# Draw the eyes
-
 # Left eye
 x = 580
 y = 310
