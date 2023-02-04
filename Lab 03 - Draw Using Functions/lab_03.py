@@ -77,19 +77,27 @@ def draw_flower(x, y, z, m):
 
 arcade.draw_lrtb_rectangle_filled(0, 999, 240, 0, arcade.color.DARK_SLATE_GRAY)
 
-draw_flower(60, 60, arcade.color.PASTEL_VIOLET, arcade.color.PAPAYA_WHIP)
-draw_flower(150, 60, arcade.color.RHYTHM, arcade.color.STORMCLOUD)
-draw_flower(950, 100, arcade.color.PINK_SHERBET, arcade.color.STORMCLOUD)
-draw_flower(350, 100, arcade.color.DEEP_LEMON, arcade.color.PAPAYA_WHIP)
-draw_flower(260, 60, arcade.color.PASTEL_VIOLET, arcade.color.PAPAYA_WHIP)
-draw_flower(850, 100, arcade.color.PINK_SHERBET, arcade.color.STORMCLOUD)
-draw_flower(450, 100, arcade.color.DEEP_LEMON, arcade.color.PAPAYA_WHIP)
-draw_flower(900, 100, arcade.color.DEEP_LEMON, arcade.color.PAPAYA_WHIP)
-draw_flower(360, 60, arcade.color.PASTEL_VIOLET, arcade.color.PAPAYA_WHIP)
-draw_flower(820, 100, arcade.color.DEEP_LEMON, arcade.color.PAPAYA_WHIP)
-draw_flower(560, 60, arcade.color.PASTEL_VIOLET, arcade.color.PAPAYA_WHIP)
+draw_flower(60, 60, arcade.color.PASTEL_VIOLET, arcade.color.LIVER)
+draw_flower(90, 180, arcade.color.MINT_CREAM, arcade.color.PAPAYA_WHIP)
+draw_flower(190, 60, arcade.color.SPIRO_DISCO_BALL, arcade.color.PAPAYA_WHIP)
+draw_flower(220, 180, arcade.color.DARK_PASTEL_RED, arcade.color.PAPAYA_WHIP)
+draw_flower(320, 60, arcade.color.DARK_PASTEL_PURPLE, arcade.color.LIVER)
+draw_flower(360, 180, arcade.color.PASTEL_YELLOW, arcade.color.LIVER)
+draw_flower(450, 60, arcade.color.MELON, arcade.color.LIVER)
+draw_flower(520, 175, arcade.color.OLIVE_DRAB, arcade.color.PAPAYA_WHIP)
+draw_flower(680, 180, arcade.color.PEACH, arcade.color.LIVER)
+draw_flower(600, 60, arcade.color.LIGHT_CRIMSON, arcade.color.LIVER)
+draw_flower(740, 60, arcade.color.PASTEL_BROWN, arcade.color.PAPAYA_WHIP)
+draw_flower(890, 60, arcade.color.PULLMAN_BROWN, arcade.color.PAPAYA_WHIP)
+draw_flower(820, 170, arcade.color.PASTEL_ORANGE, arcade.color.LIVER)
+draw_flower(980, 160, arcade.color.SATIN_SHEEN_GOLD, arcade.color.PAPAYA_WHIP)
+
+
 
 arcade.draw_lrtb_rectangle_filled(0, 999, 260, 240, arcade.color.SNOW)
+
+
+
 
 
 arcade.finish_render()
