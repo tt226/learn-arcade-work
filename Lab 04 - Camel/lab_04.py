@@ -7,14 +7,14 @@ def main():
 The natives want their camel back and are chasing you down! Survive your 
 desert trek and out run the natives.\n""")
 
-    #  variables
+#  variables
     done = False
     miles_traveled = 0
     thirst = 0
     camel_tiredness = 0
     native_travel_distance = -20
     drinks = 3
-
+    oasis = random.randrange(1, 21)
     while not done:
         print("""\nA. Drink from your canteen.
 B. Ahead moderate speed.
@@ -25,7 +25,7 @@ Q. Quit.\n""")
 
         user_choice = input("Your choice? ")
 
-        # option Q - quit the game
+# option Q - quit the game
 
         if user_choice == 'Q':
             print("you have quit the game.")
@@ -35,7 +35,7 @@ Q. Quit.\n""")
             print("you have quit the game.")
             done = True
 
-        # option E - user status check
+# option E - user status check
 
         elif user_choice == 'E':
             print("\nTravelled " + str(miles_traveled) + " miles.")
@@ -47,7 +47,7 @@ Q. Quit.\n""")
             print("You have " + str(drinks) + " drinks left.")
             print("The natives are " + str(miles_traveled - native_travel_distance) + " miles behind you.\n")
 
-        # option D - stopping for the night
+# option D - stopping for the night
 
         elif user_choice == "D":
             native_travel_distance = native_travel_distance + random.randrange(7, 15)
@@ -63,7 +63,7 @@ Q. Quit.\n""")
             print("\U0001F42A is happy and rested.")
             print("The natives are " + str(miles_traveled - native_travel_distance) + " miles behind you.\n")
 
-        # option C - Full power mode on
+# option C - Full power mode on
 
         elif user_choice == "C":
             miles_traveled = miles_traveled + random.randrange(10, 21)
@@ -83,7 +83,7 @@ Q. Quit.\n""")
             print("You've travelled " + str(miles_traveled) + " miles.")
             print("The natives are " + str(miles_traveled - native_travel_distance) + " miles behind you.\n")
 
-        # option B - Moderate speed ahead
+# option B - Moderate speed ahead
 
         elif user_choice == "B":
             miles_traveled = miles_traveled + random.randrange(5, 13)
@@ -103,7 +103,7 @@ Q. Quit.\n""")
             print("You've travelled " + str(miles_traveled) + " miles.")
             print("The natives are " + str(miles_traveled - native_travel_distance) + " miles behind you.\n")
 
-        # option A - Drinks from the canteen
+# option A - Drinks from the canteen
 
         elif user_choice == "A":
             if drinks > 0:
@@ -123,7 +123,7 @@ Q. Quit.\n""")
             else:
                 print("no more water left \U0001F494\n")
 
-        # how tired the camel is
+# how tired the camel is
 
         if camel_tiredness > 8:
             print("Your camel is dead ( ╥ω╥ )")
@@ -133,10 +133,10 @@ Q. Quit.\n""")
         elif camel_tiredness > 5:
             print("Your camel is getting tired!")
 
-        # dying of thirst
+# dying of dehydration
 
         if thirst > 6:
-            print("\nYou died of thirst!”")
+            print("\nYou died of dehydration!”")
             print("¯\_(ツ)_/¯")
             print("\n Game Over")
             done = True
@@ -144,29 +144,29 @@ Q. Quit.\n""")
         elif thirst > 4:
             print("You are thirsty!!! o(>< )o")
 
-        # the native chase distance
+# the native travel distance
 
         if native_travel_distance == miles_traveled:
             print("The natives caught you")
             print("Game Over")
+            done = True
 
         elif native_travel_distance >= miles_traveled - 15:
             print("The natives are getting closer")
 
-        # going over or equal to 200 miles
+# going over or equal to 200 miles
 
         if miles_traveled >= 200:
             print("You Won \U0001F389")
             done = True
 
-        # finding an oasis
+# finding an oasis
         if not done and thirst < 4:
-            oasis = random.randrange(1, 21)
-        if oasis == 20:
-            camel_tiredness = 0
-            thirst = 0
-            drinks = 3
-            print("You found an oasis!")
+            if oasis == 20:
+                camel_tiredness = 0
+                thirst = 0
+                drinks = 3
+                print("You found an oasis!")
 
 
 main()
