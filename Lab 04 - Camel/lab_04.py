@@ -163,7 +163,7 @@ Q. Quit.\n""")
 
 # finding an oasis
         if not done and thirst < 4:
-            if oasis == 20:
+            if oasis == 18:
                 camel_tiredness = 0
                 thirst = 0
                 drinks = 3
