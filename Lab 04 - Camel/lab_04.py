@@ -83,16 +83,16 @@ Q. Quit.\n""")
         elif thirst > 4:
             print("You are thirsty!!! o(>< )o")
 
-        if miles_traveled == 200:
-            print("You Won \U0001F389")
-            break
-
         if native_travel_distance == miles_traveled:
             print("The natives caught you")
             print("Game Over")
 
         elif native_travel_distance >= miles_traveled - 15:
             print("The natives are getting closer")
+
+        if miles_traveled >= 199:
+            print("You Won \U0001F389")
+            break
 
 
 main()
