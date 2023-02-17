@@ -17,7 +17,7 @@ desert trek and out run the natives.
     native_travel_distance = -20
     drinks = 3
     while not done:
-        print("""A. Drink from your canteen.
+        print("""\nA. Drink from your canteen.
 B. Ahead moderate speed.
 C. Ahead full speed.
 D. Stop for the night.
@@ -25,6 +25,7 @@ E. Status check.
 Q. Quit.\n""")
 
         user_choice = input("Your choice? ")
+
 
         # option Q - quit the game
 
