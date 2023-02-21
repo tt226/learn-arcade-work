@@ -110,7 +110,7 @@ Q. Quit.\n""")
             print("Game Over")
             done = True
 
-        elif native_travel_distance >= miles_traveled - 155:
+        elif native_travel_distance >= miles_traveled - 15:
             print("The natives are getting closer")
 
         # going over or equal to 200 miles
