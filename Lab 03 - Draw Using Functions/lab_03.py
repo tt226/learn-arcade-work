@@ -18,7 +18,8 @@ def draw_building(x, y):
 def draw_window(x, y, c):
     arcade.draw_rectangle_outline(x, y, 90, 44, arcade.color.DIM_GRAY, 2)
     arcade.draw_rectangle_filled(x, y, 90, 44, c)
-    arcade.draw_line(x-5, y+1, x+5, y+1, arcade.color.BLACK, 80)
+    arcade.draw_line(x - 5, y + 1, x + 5, y + 1, arcade.color.BLACK, 80)
+
 
 
 draw_building(768, 431)

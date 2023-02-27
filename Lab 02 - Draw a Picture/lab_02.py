@@ -1,7 +1,6 @@
 import arcade
-import math
 
-arcade.open_window(800, 600)
+arcade.open_window(600, 600)
 
 arcade.set_background_color((112, 128, 144))
 
@@ -38,15 +37,13 @@ width = 43
 height = 55
 start_angle = 240
 end_angle = 320
-arcade.draw_arc_outline(x, y, width, height, arcade.color.LIGHT_BROWN, start_angle, end_angle,9)
+arcade.draw_arc_outline(x, y, width, height, arcade.color.LIGHT_BROWN, start_angle, end_angle, 9)
 
 arcade.draw_triangle_filled(127, 374, 118, 342, 135, 346, arcade.color.LIGHT_BROWN)
 arcade.draw_triangle_filled(170, 374, 157, 348, 176, 346, arcade.color.LIGHT_BROWN)
 
 arcade.draw_ellipse_outline(600, 310, 3, 8, arcade.csscolor.ROSY_BROWN, 120, 4)
 arcade.draw_ellipse_outline(615, 340, 90, 20, arcade.color.LIGHT_BROWN, 38, 24)
-
-
 
 # Not smiley face
 arcade.draw_circle_filled(Screen_Width / 1, Screen_HEIGHT / 2, 50, arcade.color.INDIAN_YELLOW)
@@ -73,9 +70,6 @@ height = 10
 start_angle = 340
 end_angle = 560
 arcade.draw_arc_filled(600, 280, 18, 10, arcade.color.LIGHT_BROWN, 340, 560, 3)
-
-
-
 
 arcade.finish_render()
 
