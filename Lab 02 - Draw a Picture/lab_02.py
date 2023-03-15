@@ -1,6 +1,6 @@
 import arcade
 
-arcade.open_window(600, 600)
+arcade.open_window(800, 600)
 
 arcade.set_background_color((112, 128, 144))
 

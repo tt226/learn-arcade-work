@@ -1,13 +1,18 @@
-# type cammand tells how python classifies the data.
-x = 45
-print("x =", x, "and is type:", type(x))
+class Point():
+    def __init__(self, x=0, y =0):
+        self.x = x
+        self.y = y
+        self.coord = (self.x, self.y)
 
-x = "pie pie"
-print("x =", x, "and is type:", type(x))
+    def move(self, xy, y):
+        self.x += x
+        self.y += y
 
-x = 3.141592653589
-print("x =", x, "and is type:", type(x))
 
-x = True
-print("x =", x, "and is type of:", type(x))
+p1 = Point(3, 4)
+p2 = Point(8, 2)
+
+p1 + p2
+print(p1 + p2)
+
 

@@ -1,25 +1,42 @@
-like: list[str] = ['Pasta', 'Figs', 'Chocolate']
+""" Lab 7 - User Control """
 
-like.append('Pizza')
+import arcade
 
-print(like)
+# --- Constants ---
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
 
-planet: list[int] = [1, 2, 3, 4, 5, 6, 7, 7]
-planet.append(22)
-print(planet)
+class Emoji:
+    def __init__(self, position_x, position_y, radius, color):
+        # Take the parameters of the init function above,
+        # and create instance variables out of them.
+        self.position_x = position_x
+        self.position_y = position_y
+        self.radius = radius
+        self.color = color
 
-# copy
 
-people: list[str] = ["Six", "seven", "perhaps"]
-copy_people: list[str] = people.copy()
+class MyGame(arcade.Window):
+    """ Our Custom Window Class"""
 
-copy_people.remove('Six')
-print(people)
-print(copy_people)
+    def draw_flower(x, y, z, m):
+        arcade.draw_ellipse_outline(x, y, 120, 40, z, 80, 38)
+        arcade.draw_ellipse_outline(x, y, 120, 40, z, 80, 78)
+        arcade.draw_circle_filled(x, y, 18, m, 23)
 
-ten: list[str] = ["nauuuuur", "tehehhehehe", 'wht']
-copy_ten: list[str] = ten.copy()
-copy_ten.remove("wht")
-print(copy_ten)
+    def __init__(self):
+        """ Initializer """
 
+        # Call the parent class initializer
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
+
+    def on_draw(self):
+        arcade.start_render()
+
+
+def main():
+    window = MyGame()
+    arcade.run()
+
+main()
