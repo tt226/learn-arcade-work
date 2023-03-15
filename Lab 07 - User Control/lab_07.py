@@ -20,8 +20,13 @@ class Building():
 
     def draw(self):
         arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width, self.height, self.color)
-        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width/2, self.height/2, arcade.color.DARK_ORANGE)
-
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 2, self.height - 2,
+                                     arcade.color.PINK_PEARL)
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 3, self.height - 3,
+                                     arcade.color.PINK_SHERBET)
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 5, self.height / -5,
+                                     arcade.color.PAPAYA_WHIP)
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.BLUEBERRY)
 
     def update(self):
         self.position_x += self.change_x
@@ -32,22 +37,23 @@ class MyGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
-        arcade.set_background_color(arcade.color.BLACK_BEAN)
-
-        self.building = Building(410, 140, 200, 530, arcade.color.MINT_CREAM, 2, 4)
-
+        arcade.set_background_color(arcade.color.OCHRE)
+        self.building = Building(610, 140, 210, 530, arcade.color.AMBER, 0, 0)
+        self.window = Building(310, 140, 210, 530, arcade.color.AIR_FORCE_BLUE, 0, 0)
 
     def on_draw(self):
         arcade.start_render()
         self.building.draw()
-
+        self.window.draw()
 
     def update(self, delta_time):
         self.building.update()
+        self.window.update()
 
 
 def main():
     window = MyGame()
+
     arcade.run()
 
 
