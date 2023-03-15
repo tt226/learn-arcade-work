@@ -8,6 +8,34 @@ SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 3
 
 
+class Sun():
+    def __init__(self, position_x, position_y, change_x, change_y, radius, color):
+        self.position_x = position_x
+        self.position_y = position_y
+        self.change_x = change_x
+        self.change_y = change_y
+        self.radius = radius
+        self.color = color
+
+    def draw(self):
+        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+
+    def update(self):
+        self.position_x += self.change_x
+        self.position_y += self.change_y
+
+        if self.position_x < self.radius:
+            self.position_x = self.radius
+        if self.position_y < self.radius:
+            self.position_y = self.radius
+
+        if self.position_x > SCREEN_WIDTH - self.radius:
+            self.position_x = SCREEN_WIDTH - self.radius
+        if self.position_y > SCREEN_WIDTH - self.radius:
+            self.position_y = SCREEN_WIDTH - self.radius
+
+
+
 class Building:
 
     def __init__(self, position_x, position_y, width, height, color, change_x, change_y):
@@ -28,13 +56,11 @@ class Building:
         arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 5, self.height / -5,
                                      arcade.color.PAPAYA_WHIP)
         arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.BLUEBERRY)
-        arcade.draw_text("OPEN", start_x=340, color=arcade.color.OCHRE, start_y=410, font_name="Kenney Rocket Square",
+        arcade.draw_text("(►.◄)", start_x=340, color=arcade.color.OCHRE, start_y=410, font_name="Kenney Rocket Square",
                          font_size=45, bold=True)
-        arcade.draw_circle_filled(130, 500, 60, arcade.color.INDIAN_YELLOW)
+        arcade.draw_text("(►.◄)", start_x=540, color=arcade.color.OCHRE, start_y=410, font_name="Kenney Rocket Square",
+                         font_size=45, bold=True)
 
-    def update(self):
-        self.position_x += self.change_x
-        self.position_y += self.change_y
 
 
 class MyGame(arcade.Window):
@@ -44,30 +70,38 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
         self.building = Building(610, 140, 210, 530, arcade.color.AMBER, 0, 0)
         self.window = Building(390, 140, 210, 530, arcade.color.AIR_FORCE_BLUE, 0, 0)
+        self.sun = Sun(120, 450,0,0, 59, arcade.color.INDIAN_YELLOW)
 
     def on_draw(self):
         arcade.start_render()
         self.building.draw()
         self.window.draw()
+        self.sun.draw()
 
     def update(self, delta_time):
-        self.building.update()
-        self.window.update()
+        self.sun.update()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
-            self.building.change_x = -MOVEMENT_SPEED
+            self.sun.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
-            self.building.change_x = MOVEMENT_SPEED
+            self.sun.change_x = MOVEMENT_SPEED
         elif key == arcade.key.UP:
-            self.building.change_y = MOVEMENT_SPEED
+            self.sun.change_y = MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
-            self.building.change_y = -MOVEMENT_SPEED
+            self.sun.change_y = -MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+            self.sun.change_x = 0
+        elif key == arcade.key.UP or key == arcade.key.DOWN:
+            self.sun.change_y = 0
+
+
 
 
 def main():
     window = MyGame()
-
     arcade.run()
 
 
