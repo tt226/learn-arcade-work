@@ -5,9 +5,10 @@ import arcade
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+MOVEMENT_SPEED = 3
 
 
-class Building():
+class Building:
 
     def __init__(self, position_x, position_y, width, height, color, change_x, change_y):
         self.position_x = position_x
@@ -28,13 +29,12 @@ class Building():
                                      arcade.color.PAPAYA_WHIP)
         arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.BLUEBERRY)
         arcade.draw_text("OPEN", start_x=340, color=arcade.color.OCHRE, start_y=410, font_name="Kenney Rocket Square",
-                         font_size= 45, bold=True)
+                         font_size=45, bold=True)
         arcade.draw_circle_filled(130, 500, 60, arcade.color.INDIAN_YELLOW)
 
     def update(self):
         self.position_x += self.change_x
         self.position_y += self.change_y
-
 
 
 class MyGame(arcade.Window):
@@ -53,6 +53,16 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         self.building.update()
         self.window.update()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.LEFT:
+            self.building.change_x = -MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT:
+            self.building.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.UP:
+            self.building.change_y = MOVEMENT_SPEED
+        elif key == arcade.key.DOWN:
+            self.building.change_y = -MOVEMENT_SPEED
 
 
 def main():
