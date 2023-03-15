@@ -7,36 +7,50 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class Emoji:
-    def __init__(self, position_x, position_y, radius, color):
-        # Take the parameters of the init function above,
-        # and create instance variables out of them.
+class Building():
+
+    def __init__(self, position_x, position_y, width, height, color, change_x, change_y):
         self.position_x = position_x
         self.position_y = position_y
-        self.radius = radius
+        self.width = width
+        self.height = height
         self.color = color
+        self.change_x = change_x
+        self.change_y = change_y
+
+    def draw(self):
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width, self.height, self.color)
+
+    def update(self):
+        self.position_x += self.change_x
+        self.position_y += self.change_y
 
 
 class MyGame(arcade.Window):
-    """ Our Custom Window Class"""
-
-    def draw_flower(x, y, z, m):
-        arcade.draw_ellipse_outline(x, y, 120, 40, z, 80, 38)
-        arcade.draw_ellipse_outline(x, y, 120, 40, z, 80, 78)
-        arcade.draw_circle_filled(x, y, 18, m, 23)
 
     def __init__(self):
-        """ Initializer """
-
-        # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
+        arcade.set_background_color(arcade.color.BLACK_BEAN)
+
+        self.building = Building(410, 340, 140, 530, arcade.color.BLACK, 3, 4)
+
 
     def on_draw(self):
         arcade.start_render()
+        self.building.draw()
+        self.building.draw()
+        self.building.draw()
+        self.building.draw()
+
+        self.building.draw()
+
+    def update(self, delta_time):
+        self.building.update()
 
 
 def main():
     window = MyGame()
     arcade.run()
+
 
 main()
