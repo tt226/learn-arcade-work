@@ -6,6 +6,8 @@ import arcade
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 3
+wavy_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/sound.wav")
+zap_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/zap.wav")
 
 
 class Sun():
@@ -45,9 +47,9 @@ class Ring():
         self.change_y = change_y
 
     def on_draw(self):
-        arcade.draw_ellipse_outline(self.position_x, self.position_y, 100, 50, self.color, 3)
-        arcade.draw_ellipse_outline(self.position_x, self.position_y, 50, 100, arcade.color.INDIAN_YELLOW, 3)
-        arcade.draw_circle_filled(self.position_x, self.position_y, 13, arcade.color.PINK_SHERBET, 23)
+        arcade.draw_ellipse_outline(self.position_x, self.position_y, 100, 50, self.color, 5)
+        arcade.draw_ellipse_outline(self.position_x, self.position_y, 50, 100, arcade.color.INDIAN_YELLOW, 5)
+        arcade.draw_circle_filled(self.position_x, self.position_y, 13, arcade.color.PURPLE_MOUNTAIN_MAJESTY, 23)
 
     def update(self):
         self.position_x += self.change_x
@@ -66,29 +68,27 @@ class Building:
         self.change_y = change_y
 
     def draw(self):
-        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width, self.height, self.color)
-        arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 2, self.height - 2,
-                                     arcade.color.PINK_PEARL)
         arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 3, self.height - 3,
-                                     arcade.color.PINK_SHERBET)
+                                     arcade.color.PURPLE_MOUNTAIN_MAJESTY)
         arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 5, self.height / -5,
                                      arcade.color.PAPAYA_WHIP)
-        arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.BLUEBERRY)
+        arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.CYBER_GRAPE)
         arcade.draw_text("(►.◄)", start_x=358, color=arcade.color.OCHRE, start_y=135,
                          font_name="Kenney Rocket Square",
                          font_size=20, bold=True)
-        arcade.draw_text("(►.◄)", start_x=579, color=arcade.color.OCHRE, start_y=135, font_name="Kenney Rocket Square",
+        arcade.draw_text("(►.◄)", start_x=571, color=arcade.color.OCHRE, start_y=135, font_name="Kenney Rocket Square",
                          font_size=20, bold=True)
-        arcade.draw_text("OPEN", start_x=375, color=arcade.color.OCHRE, start_y=430, font_name="Kenney Rocket Square",
+        arcade.draw_text("OPEN", start_x=365, color=arcade.color.OCHRE, start_y=425, font_name="Kenney Rocket Square",
                          font_size=50, bold=True)
 
 
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
-        arcade.set_background_color(arcade.color.BLACK)
-        self.building = Building(610, 140, 210, 530, arcade.color.AMBER, 0, 0)
-        self.window = Building(390, 140, 210, 530, arcade.color.AIR_FORCE_BLUE, 0, 0)
+        arcade.set_background_color(arcade.color.REGALIA)
+
+        self.building = Building(595, 140, 210, 530, arcade.color.AMBER, 0, 0)
+        self.window = Building(380, 140, 210, 530, arcade.color.OCHRE, 0, 0)
         self.sun = Sun(120, 510, 0, 0, 60, arcade.color.INDIAN_YELLOW)
         self.ring = Ring(120, 510, arcade.color.INDIAN_YELLOW, 0, 0)
         self.set_mouse_visible(False)
@@ -124,12 +124,23 @@ class MyGame(arcade.Window):
         self.ring.position_y = y
         self.ring.position_x = x
 
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        if button == arcade.MOUSE_BUTTON_LEFT or arcade.MOUSE_BUTTON_RIGHT:
+            arcade.play_sound(wavy_sound)
+
+    def edge_sound(self):
+        if self.sun.position_x > 800:
+            arcade.play_sound(zap_sound)
+        if self.sun.position_x < 10:
+            arcade.play_sound(zap_sound)
+        if self.sun.position_y > 500:
+            arcade.play_sound(zap_sound)
+        if self.sun.position_y < 10:
+            arcade.play_sound(zap_sound)
 
 def main():
     window = MyGame()
     arcade.run()
-
-arcade.load_sound(\Users\tt262\)
 
 
 main()
