@@ -37,15 +37,21 @@ class Sun():
 
 class Ring():
 
-    def __init__(self, position_x, position_y, color):
+    def __init__(self, position_x, position_y, color, change_x, change_y):
         self.position_x = position_x
         self.position_y = position_y
         self.color = color
+        self.change_x = change_x
+        self.change_y = change_y
 
     def on_draw(self):
         arcade.draw_ellipse_outline(self.position_x, self.position_y, 100, 50, self.color, 3)
-        arcade.draw_ellipse_outline(self.position_x, self.position_y, 50, 100, arcade.color.OCHRE, 3)
+        arcade.draw_ellipse_outline(self.position_x, self.position_y, 50, 100, arcade.color.INDIAN_YELLOW, 3)
         arcade.draw_circle_filled(self.position_x, self.position_y, 13, arcade.color.PINK_SHERBET, 23)
+
+    def update(self):
+        self.position_x += self.change_x
+        self.position_y += self.change_y
 
 
 class Building:
@@ -68,11 +74,13 @@ class Building:
         arcade.draw_rectangle_filled(self.position_x, self.position_y, self.width - 5, self.height / -5,
                                      arcade.color.PAPAYA_WHIP)
         arcade.draw_rectangle_filled(self.position_x, self.position_y, 90, 44, arcade.color.BLUEBERRY)
-        arcade.draw_text("(►.◄)", start_x=320, color=arcade.color.OCHRE, start_y=410,
+        arcade.draw_text("(►.◄)", start_x=358, color=arcade.color.OCHRE, start_y=135,
                          font_name="Kenney Rocket Square",
-                         font_size=45, bold=True)
-        arcade.draw_text("(►.◄)", start_x=540, color=arcade.color.OCHRE, start_y=410, font_name="Kenney Rocket Square",
-                         font_size=45, bold=True)
+                         font_size=20, bold=True)
+        arcade.draw_text("(►.◄)", start_x=579, color=arcade.color.OCHRE, start_y=135, font_name="Kenney Rocket Square",
+                         font_size=20, bold=True)
+        arcade.draw_text("OPEN", start_x=375, color=arcade.color.OCHRE, start_y=430, font_name="Kenney Rocket Square",
+                         font_size=50, bold=True)
 
 
 class MyGame(arcade.Window):
@@ -82,7 +90,8 @@ class MyGame(arcade.Window):
         self.building = Building(610, 140, 210, 530, arcade.color.AMBER, 0, 0)
         self.window = Building(390, 140, 210, 530, arcade.color.AIR_FORCE_BLUE, 0, 0)
         self.sun = Sun(120, 510, 0, 0, 60, arcade.color.INDIAN_YELLOW)
-        self.ring = Ring(120, 510, arcade.color.OCHRE)
+        self.ring = Ring(120, 510, arcade.color.INDIAN_YELLOW, 0, 0)
+        self.set_mouse_visible(False)
 
     def on_draw(self):
         arcade.start_render()
@@ -93,6 +102,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         self.sun.update()
+        self.ring.update()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
@@ -110,10 +120,16 @@ class MyGame(arcade.Window):
         elif key == arcade.key.UP or key == arcade.key.DOWN:
             self.sun.change_y = 0
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.ring.position_y = y
+        self.ring.position_x = x
+
 
 def main():
     window = MyGame()
     arcade.run()
+
+arcade.load_sound(\Users\tt262\)
 
 
 main()
