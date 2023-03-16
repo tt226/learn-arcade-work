@@ -7,7 +7,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 3
 wavy_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/sound.wav")
-zap_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/zap.wav")
+zap_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/zapp.wav")
 
 
 class Sun():
@@ -27,14 +27,19 @@ class Sun():
         self.position_y += self.change_y
 
         if self.position_x < self.radius:
+            arcade.play_sound(zap_sound)
             self.position_x = self.radius
+
         if self.position_y < self.radius:
+            arcade.play_sound(zap_sound)
             self.position_y = self.radius
 
         if self.position_x > SCREEN_WIDTH - self.radius:
+            arcade.play_sound(zap_sound)
             self.position_x = SCREEN_WIDTH - self.radius
-        if self.position_y > SCREEN_WIDTH - self.radius:
-            self.position_y = SCREEN_WIDTH - self.radius
+        if self.position_y > SCREEN_HEIGHT - self.radius:
+            arcade.play_sound(zap_sound)
+            self.position_y = SCREEN_HEIGHT - self.radius
 
 
 class Ring():
@@ -127,16 +132,6 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if button == arcade.MOUSE_BUTTON_LEFT or arcade.MOUSE_BUTTON_RIGHT:
             arcade.play_sound(wavy_sound)
-
-    def edge_sound(self):
-        if self.sun.position_x > 800:
-            arcade.play_sound(zap_sound)
-        if self.sun.position_x < 10:
-            arcade.play_sound(zap_sound)
-        if self.sun.position_y > 500:
-            arcade.play_sound(zap_sound)
-        if self.sun.position_y < 10:
-            arcade.play_sound(zap_sound)
 
 def main():
     window = MyGame()
