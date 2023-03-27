@@ -129,7 +129,7 @@ class MyGame(arcade.Window):
         self.ring.position_y = y
         self.ring.position_x = x
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+    def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT or arcade.MOUSE_BUTTON_RIGHT:
             arcade.play_sound(wavy_sound)
 
