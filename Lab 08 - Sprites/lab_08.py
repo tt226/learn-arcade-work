@@ -1,17 +1,19 @@
 """ Sprite Sample Program """
 import arcade
 import random
-import math
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = 0.2
-SPRITE_SCALING_LASER = 0.3
+SPRITE_SCALING_COIN = 0.4
+SPRITE_SCALING_LASER = 0.4
 COIN_COUNT = 50
-LASER_COUNT = 30
+LASER_COUNT = 40
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+lose_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/lose..wav")
+win_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/powerup..wav")
 
 
 class Coin(arcade.Sprite):
@@ -28,15 +30,17 @@ class Coin(arcade.Sprite):
 
         if self.top < 0:
             self.reset_position()
+
+
 class Laser(arcade.Sprite):
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
 
-        self.change_x = 0
-        self.change_y = 0
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
         if self.left < 0:
-            self.change_x *= 1
+            self.change_x *= -1
 
         if self.right > SCREEN_WIDTH:
             self.change_y *= -1
@@ -47,16 +51,17 @@ class Laser(arcade.Sprite):
         if self.top > SCREEN_HEIGHT:
             self.change_y *= -1
 
+        self.center_y += -1
+
+    def reset_position(self):
+        self.center_y = random.randrange(SCREEN_HEIGHT + 10, SCREEN_HEIGHT + 100)
+        self.center_x = random.randrange(SCREEN_WIDTH)
+
+    def update(self):
         self.center_y -= 1
 
-        # check if the coin has fallen off, and reset it if so
         if self.top < 0:
-            self.reset_point()
-
-    def reset_point(self):
-        # reset coins to any random spot above the screen
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20, SCREEN_WIDTH + 100)
-        self.center_x = random.randrange(SCREEN_WIDTH)
+            self.reset_position()
 
 
 class MyGame(arcade.Window):
@@ -94,20 +99,20 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        # yellow ball
+        # yellow gem
         for i in range(50):
-            coin = Coin("ballYellow_02.png", SPRITE_SCALING_COIN/3)
+            coin = Coin("ballYellow_02.png", SPRITE_SCALING_COIN / 3)
             # position the coins
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
             self.coin_list.append(coin)
 
         # laser
-        for i in range(LASER_COUNT):
+        for i in range(25):
             laser = Laser("laserGreen_groundBurst.png", SPRITE_SCALING_LASER)
             # position the coins
 
-            laser.center_x = random.randrange(SCREEN_WIDTH)
+            laser.center_x = random.randrange(120, SCREEN_WIDTH)
             laser.center_y = random.randrange(SCREEN_HEIGHT)
             laser.change_x = random.randrange(-3, 4)
             laser.change_y = random.randrange(-3, 4)
@@ -134,13 +139,14 @@ class MyGame(arcade.Window):
         for coin in coins_hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
+            arcade.play_sound(win_sound)
 
         self.laser_list.update()
         laser_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.laser_list)
         for laser in laser_hit_list:
             laser.remove_from_sprite_lists()
             self.score -= 1
-
+            arcade.play_sound(lose_sound)
 
 
 def main():
