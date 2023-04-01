@@ -6,7 +6,7 @@ import random
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.4
 SPRITE_SCALING_LASER = 0.4
-COIN_COUNT = 50
+COIN_COUNT = 80
 LASER_COUNT = 40
 
 SCREEN_WIDTH = 800
@@ -94,22 +94,22 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # characters
-        self.player_sprite = arcade.Sprite("shipGreen_manned.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite("green_spaceship.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         # yellow gem
-        for i in range(50):
-            coin = Coin("ballYellow_02.png", SPRITE_SCALING_COIN / 3)
+        for i in range(COIN_COUNT):
+            coin = Coin("yellow_ball.png", SPRITE_SCALING_COIN / 3)
             # position the coins
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
             self.coin_list.append(coin)
 
         # laser
-        for i in range(25):
-            laser = Laser("laserGreen_groundBurst.png", SPRITE_SCALING_LASER)
+        for i in range(LASER_COUNT):
+            laser = Laser("laser_beam.png", SPRITE_SCALING_LASER)
             # position the coins
 
             laser.center_x = random.randrange(120, SCREEN_WIDTH)
