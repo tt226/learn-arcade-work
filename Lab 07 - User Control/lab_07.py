@@ -6,8 +6,8 @@ import arcade
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 3
-wavy_sound = arcade.load_sound("sound.wav" "")
-zap_sound = arcade.load_sound("zap.wav")
+wavy_sound = arcade.load_sound("sound.wav")
+zap_sound = arcade.load_sound("lose..wav")
 
 
 class Sun():
