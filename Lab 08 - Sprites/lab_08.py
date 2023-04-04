@@ -12,8 +12,10 @@ LASER_COUNT = 25
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-lose_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/lose..wav")
-win_sound = arcade.load_sound(r"C:\Users\tt262\Downloads/powerup..wav")
+lose_sound = arcade.load_sound("zapp1.wav")
+win_sound = arcade.load_sound("power_rup.wav")
+game_win = arcade.load_sound("game_win.wav")
+game_lose = arcade.load_sound("game_lose.mp3")
 
 
 class Coin(arcade.Sprite):
@@ -131,15 +133,18 @@ class MyGame(arcade.Window):
                              font_size=50, bold=True)
 
             if self.score <= 50:
-                arcade.draw_text("YOU LOST \n ¯\_(ツ)_/¯", start_x=270, color=arcade.color.OCHRE, start_y=240,
+                arcade.draw_text("YOU LOST \n ¯\_(ツ)_/¯", start_x=210, color=arcade.color.OCHRE, start_y=240,
                                  font_name="Kenney Rocket Square",
                                  font_size=20, bold=True)
+
+                arcade.play_sound(game_win, looping=False)
 
             if self.score == 50:
                 arcade.draw_text("YOU WON"
                                  '°˖✧◝(⁰▿⁰)◜✧˖°', start_x=330, color=arcade.color.OCHRE, start_y=240,
                                  font_name="Kenney Rocket Square",
                                  font_size=20, bold=True)
+                arcade.play_sound(game_lose, looping=False)
 
         output = f"Score:  {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.PAPAYA_WHIP, 14)
