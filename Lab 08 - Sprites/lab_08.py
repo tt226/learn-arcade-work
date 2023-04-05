@@ -14,8 +14,6 @@ SCREEN_HEIGHT = 600
 
 lose_sound = arcade.load_sound("zapp1.wav")
 win_sound = arcade.load_sound("power_rup.wav")
-game_win = arcade.load_sound("game_win.wav")
-game_lose = arcade.load_sound("game_lose.mp3")
 
 
 class Coin(arcade.Sprite):
@@ -24,7 +22,7 @@ class Coin(arcade.Sprite):
         super().__init__(filename, sprite_scaling)
 
     def reset_position(self):
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100)
+        self.center_y = random.randrange(SCREEN_HEIGHT + 10, SCREEN_HEIGHT + 100)
         self.center_x = random.randrange(SCREEN_WIDTH)
 
     def update(self):
@@ -34,9 +32,16 @@ class Coin(arcade.Sprite):
             self.reset_position()
 
 
+
 class Laser(arcade.Sprite):
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
+        self.change_x = 0
+        self.change_y = 0
+
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
         if self.left < 0:
             self.change_x *= -1
@@ -49,18 +54,6 @@ class Laser(arcade.Sprite):
 
         if self.top > SCREEN_HEIGHT:
             self.change_y *= -1
-
-        self.center_y += -1
-
-    def reset_position(self):
-        self.center_y = random.randrange(SCREEN_HEIGHT + 10, SCREEN_HEIGHT + 100)
-        self.center_x = random.randrange(SCREEN_WIDTH)
-
-    def update(self):
-        self.center_y -= 1
-
-        if self.top < 0:
-            self.reset_position()
 
 
 class MyGame(arcade.Window):
@@ -106,6 +99,7 @@ class MyGame(arcade.Window):
             # position the coins
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
+
             # add
             self.coin_list.append(coin)
 
@@ -117,6 +111,7 @@ class MyGame(arcade.Window):
             laser.center_y = random.randrange(SCREEN_HEIGHT)
             laser.change_x = random.randrange(-3, 4)
             laser.change_y = random.randrange(-3, 4)
+
             # add
             self.laser_list.append(laser)
 
@@ -137,14 +132,11 @@ class MyGame(arcade.Window):
                                  font_name="Kenney Rocket Square",
                                  font_size=20, bold=True)
 
-                arcade.play_sound(game_win, looping=False)
-
             if self.score == 50:
                 arcade.draw_text("YOU WON"
                                  '°˖✧◝(⁰▿⁰)◜✧˖°', start_x=330, color=arcade.color.OCHRE, start_y=240,
                                  font_name="Kenney Rocket Square",
                                  font_size=20, bold=True)
-                arcade.play_sound(game_lose, looping=False)
 
         output = f"Score:  {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.PAPAYA_WHIP, 14)
