@@ -25,7 +25,20 @@ VIEWPORT_MARGIN = 220
 CAMERA_SPEED = 0.1
 
 # How fast the character moves
-PLAYER_MOVEMENT_SPEED = 7
+PLAYER_MOVEMENT_SPEED = 5.1
+
+
+class Coin(arcade.Sprite):
+    def __init__(self, filename, SPRITE_SCALING):
+        super(Coin, self).__init__(filename, SPRITE_SCALING)
+        self.center_x = 0
+        self.center_y = 0
+        self.change_x = 0
+        self.change_y = 0
+
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
 
 class MyGame(arcade.Window):
@@ -38,11 +51,15 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title, resizable=True)
 
         # Sprite lists
+        self.coin_list = None
         self.player_list = None
         self.wall_list = None
 
         # Set up the player
         self.player_sprite = None
+
+        # coin sprite
+        self.coin_sprite = None
 
         # Physics engine so we don't run into walls.
         self.physics_engine = None
@@ -53,6 +70,8 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
+        # score
+        self.score = 0
         # Create the cameras. One for the GUI, one for the sprites.
 
         # We scroll the 'sprite world' but not the GUI.
@@ -67,6 +86,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite("shipPink_manned.png",
@@ -77,13 +97,34 @@ class MyGame(arcade.Window):
 
         # -- Set up several columns of walls
         for x in range(310, 1560, 100):
-            for y in range(0, 1400, 120):
+            for y in range(0, 1560, 120):
                 # Randomly skip a box so the player can find a way through
                 wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
                 wall.center_x = x * 1.6
                 wall.center_y = y * 2
                 self.wall_list.append(wall)
 
+        for x in range(0, 1560, 130):
+            dead_fish = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
+            dead_fish.center_x = x
+            dead_fish.center_y = x * 2
+            self.wall_list.append(dead_fish)
+
+
+
+
+        # coin-fishes
+        for i in range(0, 1400, 10):
+            coin = Coin("fishTile_081.png", SPRITE_SCALING)
+            coin_correct = False
+            while not coin_correct:
+                coin.center_x = random.randrange(100, 1600 * 2)
+                coin.center_y = random.randrange(100, 1600 * 2)
+                coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
+                wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
+                if len(wall_hit_list) == 0 and len(coin_hit_list) == 0:
+                    coin_correct = True
+                    self.coin_list.append(coin)
 
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
@@ -97,17 +138,14 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Select the camera we'll use to draw all our sprites
-
         self.camera_sprites.use()
-
         # Draw all the sprites.
         self.wall_list.draw()
         self.player_list.draw()
+        self.coin_list.draw()
 
         # Select the (unscrolled) camera for our GUI
-
         self.camera_gui.use()
-
         # Draw the GUI
         arcade.draw_rectangle_filled(self.width // 2,
                                      20,
@@ -117,6 +155,9 @@ class MyGame(arcade.Window):
         text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, " \
                f"{self.camera_sprites.position[1]:5.1f})"
         arcade.draw_text(text, 10, 10, arcade.color.NEON_CARROT, 20)
+        # score
+        output = f"Score:  {self.score}"
+        arcade.draw_text(output, 450, 10, arcade.color.OU_CRIMSON_RED, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -145,6 +186,12 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
+        self.coin_list.update()
+        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        for coin in coins_hit_list:
+            coin.remove_from_sprite_lists()
+            self.score += 1
+
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
         self.player_sprite.change_y = 0
@@ -159,6 +206,9 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
         # Call update on all sprites (The sprites don't do much in this
+        self.coin_list.update()
+        self.player_sprite.update()
+        self.wall_list.update()
         # example though.)
         self.physics_engine.update()
 
