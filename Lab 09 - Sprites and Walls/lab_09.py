@@ -53,7 +53,6 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
-
         # Create the cameras. One for the GUI, one for the sprites.
 
         # We scroll the 'sprite world' but not the GUI.
@@ -61,7 +60,6 @@ class MyGame(arcade.Window):
         self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
         self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -71,26 +69,26 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        self.player_sprite = arcade.Sprite("shipPink_manned.png",
                                            scale=0.4)
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
         # -- Set up several columns of walls
-        for x in range(200, 1650, 210):
-            for y in range(0, 1600, 64):
+        for x in range(310, 1560, 100):
+            for y in range(0, 1400, 120):
                 # Randomly skip a box so the player can find a way through
-                if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
-                    wall.center_x = x
-                    wall.center_y = y
-                    self.wall_list.append(wall)
+                wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+                wall.center_x = x * 1.6
+                wall.center_y = y * 2
+                self.wall_list.append(wall)
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.SPACE_CADET)
 
     def on_draw(self):
         """ Render the screen. """
@@ -98,21 +96,17 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         self.clear()
 
-
         # Select the camera we'll use to draw all our sprites
 
         self.camera_sprites.use()
-
 
         # Draw all the sprites.
         self.wall_list.draw()
         self.player_list.draw()
 
-
         # Select the (unscrolled) camera for our GUI
 
         self.camera_gui.use()
-
 
         # Draw the GUI
         arcade.draw_rectangle_filled(self.width // 2,
@@ -122,7 +116,7 @@ class MyGame(arcade.Window):
                                      arcade.color.ALMOND)
         text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, " \
                f"{self.camera_sprites.position[1]:5.1f})"
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
+        arcade.draw_text(text, 10, 10, arcade.color.NEON_CARROT, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -168,12 +162,9 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
-
         # Scroll the screen to the player
 
         self.scroll_to_player()
-
-
 
     def scroll_to_player(self):
 
@@ -191,15 +182,11 @@ class MyGame(arcade.Window):
 
         """
 
-
-
         position = Vec2(self.player_sprite.center_x - self.width / 2,
 
                         self.player_sprite.center_y - self.height / 2)
 
         self.camera_sprites.move_to(position, CAMERA_SPEED)
-
-
 
     def on_resize(self, width, height):
 
@@ -214,7 +201,6 @@ class MyGame(arcade.Window):
         self.camera_sprites.resize(int(width), int(height))
 
         self.camera_gui.resize(int(width), int(height))
-
 
 
 def main():
