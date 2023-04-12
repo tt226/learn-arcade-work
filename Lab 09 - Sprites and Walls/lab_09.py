@@ -27,6 +27,9 @@ CAMERA_SPEED = 0.1
 # How fast the character moves
 PLAYER_MOVEMENT_SPEED = 5.1
 
+# coin sound
+coin_sound = arcade.load_sound("coinsound.ogg")
+
 
 class Coin(arcade.Sprite):
     def __init__(self, filename, SPRITE_SCALING):
@@ -104,13 +107,26 @@ class MyGame(arcade.Window):
                 wall.center_y = y * 2
                 self.wall_list.append(wall)
 
-        for x in range(0, 1560, 130):
-            dead_fish = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            dead_fish.center_x = x
-            dead_fish.center_y = x * 2
-            self.wall_list.append(dead_fish)
+        for x in range(310, 1600, 50):
+            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+            wall.center_x = x * 1.6
+            self.wall_list.append(wall)
 
+        for y in range(0, 1700, 50):
+            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+            wall.center_y = y * 1.8
+            self.wall_list.append(wall)
 
+        for y in range(1600, 17000, 50):
+            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+            wall.center_y = y * 1.8
+            self.wall_list.append(wall)
+
+        for x in range(173, 659, 33):
+            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 350
+            self.wall_list.append(wall)
 
 
         # coin-fishes
@@ -191,6 +207,7 @@ class MyGame(arcade.Window):
         for coin in coins_hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
+            arcade.play_sound(coin_sound)
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
