@@ -108,57 +108,60 @@ class MyGame(arcade.Window):
                 self.wall_list.append(wall)
 
         for x in range(160, 1700, 50):
-            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
-            wall.center_x = x * 1.6
-            self.wall_list.append(wall)
+            for y in range(160, 1700, 10):
+                wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
+                wall.center_y = 0
+                wall.center_x = x * 1.6
+                self.wall_list.append(wall)
 
-        for y in range(0, 1600, 50):
-            wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
-            wall.center_x = 160
-            wall.center_y = y * 1.6
-            self.wall_list.append(wall)
+        for x in range(160, 1700, 50):
+            for y in range(160, 1700, 10):
+                wall = arcade.Sprite("particleYellow_7.png", SPRITE_SCALING)
+                wall.center_y = 3200
+                wall.center_x = x * 1.6
+                self.wall_list.append(wall)
 
 
-        for x in range(100, 2000, 70):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 740
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2 + 12
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 1060
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 1380
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 1700
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 2020
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 2020
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
-        for x in range(100, 2000, 80):
+        for x in range(100, 2000, 200):
             wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
             wall.center_x = 2330
-            wall.center_y = x // 1.3
+            wall.center_y = x // 2
             self.wall_list.append(wall)
 
 
