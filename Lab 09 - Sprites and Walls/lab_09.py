@@ -181,7 +181,7 @@ class MyGame(arcade.Window):
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.SPACE_CADET)
+        arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
         """ Render the screen. """

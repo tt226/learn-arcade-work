@@ -11,11 +11,12 @@ my_file = open("dictionary.txt")
 dictionary_text = []
 
 # loop through each line
-for line in dictionary_text:
+for line in my_file:
     # remove any carriage return or line feed or spaces
-    line = line.strip(line)
-    # add the words to the list
-    dictionary_text.append(line)
+    for line in dictionary_text:
+        line = line.strip(line)
+        # add the words to the list
+        dictionary_text.append(line)
 
 my_file.close()
 

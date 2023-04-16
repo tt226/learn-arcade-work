@@ -1,25 +1,10 @@
-import arcade
-import random
+first_name = input("Enter your first name ")
+last_name = input("Enter your last name ")
+age = input("Enter your age ")
 
+print("Hello, my name is", first_name, last_name, "\nI am", age, "years old.")
 
-# variables
+print("Nice to meet you", first_name)
 
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 600
-SPEED = 120
-
-arcade.open_window(900, 600, "Gaming project")
-
-arcade.start_render()
-
-arcade.set_background_color(arcade.color.BLANCHED_ALMOND)
-
-
-def stars():
-    s
-
-
-
-arcade.finish_render()
-
-arcade.run()
+if input == "":
+    print("you are rejected")
