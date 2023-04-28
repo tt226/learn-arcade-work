@@ -82,18 +82,18 @@ class MyGame(arcade.Window):
             else:
                 self.grid[row][column] = 0
 
-        # count all the cells that will be selected
+        # total cells selected
         cells_selected = 0
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 if self.grid[row][column] == 1:
                     cells_selected += 1
-                    print(f"Total of: {cells_selected} cells selected.")
+        print(f"Total of: {cells_selected} cells selected.")
 
         # cells selected in each row
-        continuous_blocks = 0
-        cells_selected_row = 0
         for row in range(ROW_COUNT):
+            continuous_blocks = 0
+            cells_selected_row = 0
             for column in range(COLUMN_COUNT):
                 if self.grid[row][column] == 1:
                     continuous_blocks += 1
@@ -104,12 +104,13 @@ class MyGame(arcade.Window):
                     continuous_blocks = 0
         print(f"Row {row} has {cells_selected_row} cells selected.")
 
+        # colum cell selected
         cells_selected_column = 0
         for column in range(COLUMN_COUNT):
             for row in range(ROW_COUNT):
                 if self.grid[row][column] == 1:
                     cells_selected_column += 1
-                print(f"Column {column} has {cells_selected_column} cells selected.")
+                    print(f"Column {column} has {cells_selected_column} cells selected.")
 
 
 def main():
