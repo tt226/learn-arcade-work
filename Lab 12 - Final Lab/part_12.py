@@ -31,8 +31,8 @@ class Coin(arcade.Sprite):
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
         # coin position
-        self.center_x = random.randrange(10// 5 + SCREEN_WIDTH)
-        self.center_y = random.randrange(10 // 4 + SCREEN_HEIGHT)
+        self.center_x = random.randrange(10 // 5 * SCREEN_WIDTH)
+        self.center_y = random.randrange(10 // 4 * SCREEN_HEIGHT)
         # change in position
         self.change_x -= 1
         self.change_y += 1
@@ -284,6 +284,13 @@ class MyGame(arcade.Window):
         frog_sprite.center_x = 440
         frog_sprite.change_x += 0.5
         self.frog_list.append(frog_sprite)
+        # Score Board
+        output = f"Score : {self.score:.3f}"
+        arcade.draw_text(output,
+                         self.view_left + 20,
+                         SCREEN_HEIGHT - 80 + self.view_bottom,
+                         arcade.color.WHITE, 16)
+
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
