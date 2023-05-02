@@ -1,4 +1,14 @@
-# first ma
+# itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
+# https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
+# https://kenney.nl/assets/alien-ufo-pack
+
+# source code - citations
+# platform_tutorial
+# https://api.arcade.academy/en/latest/examples/platform_tutorial/step_17.html
+# Maze depth first
+# https://api.arcade.academy/en/development/example_code/how_to_examples/maze_depth_first.html
+
+
 import random
 import arcade
 import timeit
@@ -22,6 +32,9 @@ MERGE_SPRITES = True
 
 VIEWPORT_MARGIN = 200
 
+# sounds from ich.io - "Sweet Sounds - by Coffee Bat
+# https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
+
 coinn_sound = arcade.load_sound("assets/sounds/jumping.wav")
 game_over = arcade.load_sound("assets/sounds/GameOver.wav")
 
@@ -36,7 +49,6 @@ class Coin(arcade.Sprite):
         # change in position
         self.change_x += 5
         self.change_y += 5
-
 
     def update(self):
         self.center_y += self.center_x
@@ -163,6 +175,7 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
+                        # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
                         wall = arcade.Sprite("gray.png", scale=SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
@@ -180,7 +193,7 @@ class MyGame(arcade.Window):
 
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
-
+                    # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
                     wall = arcade.Sprite("new/Purple.png", scale=SPRITE_SCALING)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
@@ -189,6 +202,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = arcade.Sprite(
+            # kenney's UFO pack - https://kenney.nl/assets/alien-ufo-pack
             "new/shipYellow_manned.png",
             scale=SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
@@ -209,6 +223,7 @@ class MyGame(arcade.Window):
 
             # coin placed successfully
             for coin in range(80):
+                # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
                 coin = Coin("new/tile000.png", 0.8)
                 coin_placed_right = False
                 while not coin_placed_right:
@@ -291,7 +306,6 @@ class MyGame(arcade.Window):
                          SCREEN_HEIGHT - 80 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -365,20 +379,17 @@ class MyGame(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-
-
         if self.score >= 20:
             self.clear()
             arcade.draw_text("GAME OVER", start_x=140, color=arcade.color.OCHRE, start_y=350,
                              font_name="Kenney Rocket Square",
                              font_size=50, bold=True)
 
-
         if self.score <= 20:
             self.clear()
             arcade.draw_text("YOU LOST \n ¯\_(ツ)_/¯", start_x=210, color=arcade.color.OCHRE, start_y=240,
-                                font_name="Kenney Rocket Square",
-                                font_size=20, bold=True)
+                             font_name="Kenney Rocket Square",
+                             font_size=20, bold=True)
 
 
 def main():
