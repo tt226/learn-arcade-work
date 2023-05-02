@@ -22,7 +22,7 @@ MERGE_SPRITES = True
 
 VIEWPORT_MARGIN = 200
 
-coin_sound = arcade.load_sound("coin.ogg")
+coinn_sound = arcade.load_sound("jumping.wav")
 
 
 class Coin(arcade.Sprite):
@@ -30,11 +30,11 @@ class Coin(arcade.Sprite):
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
         # coin position
-        self.center_x = 0
-        self.center_y = 0
+        self.center_x = random.randrange(10// 5 + SCREEN_WIDTH)
+        self.center_y = random.randrange(10 // 4 + SCREEN_HEIGHT)
         # change in position
-        self.change_x = 0
-        self.change_y = 0
+        self.change_x -= 1
+        self.change_y += 1
 
     def update(self):
         self.center_y += self.center_x
@@ -206,23 +206,25 @@ class MyGame(arcade.Window):
                 placed = True
 
             # coin placed successfully
-            for coin in range(54):
+            for coin in range(80):
                 coin = Coin("tile000.png", 0.8)
                 coin_placed_right = False
                 while not coin_placed_right:
                     coin.center_x = random.randrange(SCREEN_WIDTH)
                     coin.center_y = random.randrange(SCREEN_HEIGHT)
+                    # checking for collision
                     coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
                     frog_list = arcade.check_for_collision_with_list(coin, self.frog_list)
                     wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
                     if len(frog_list) == 0 and len(coin_hit_list) == 0 and len(wall_hit_list) == 0:
                         coin_placed_right = True
+                        # add
                         self.coin_list.append(coin)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        self.background_color = arcade.color.MANATEE
+        self.background_color = arcade.color.JUNGLE_GREEN
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
@@ -235,7 +237,7 @@ class MyGame(arcade.Window):
         """
         # display score
         # Put the text on the screen.
-        output = f"SCORE: {self.score:.3f}"
+        output = f"SCORE: {self.score}"
         arcade.draw_text(output,
                          self.view_left + 20,
                          SCREEN_HEIGHT - 60 + self.view_bottom,
@@ -302,17 +304,22 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
-    def on_update(self, delta_time):
+    def on_update(self, delta_time, start_time=None):
         """ Movement and game logic """
+        for frog in self.frog_list:
+            frog.follow_sprite(self.player_sprite)
 
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
-        for coin in coins_hit_list:
+        # sprites that connect with each other
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        for coin in hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
-            arcade.play_sound(coin_sound)
+            arcade.play_sound(coinn_sound)
 
-        start_time = timeit.default_timer()
-
+        not_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.frog_list)
+        for frog in not_hit_list:
+            frog.remove_from_sprite_lists()
+            arcade.load_sound("GameOver.wav")
         # Call update on all sprites
         self.physics_engine.update()
         # Track if we need to change the viewport
@@ -347,9 +354,6 @@ class MyGame(arcade.Window):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
-
-        # Save the time it took to do this.
-        self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
