@@ -3,24 +3,72 @@ import random
 import arcade
 import timeit
 
-NINJA_FROG_SIZE = 180
+NORMAL_SPRITE_SIZE = 190
 SPRITE_SCALING = 0.25
-SPRITE_SIZE = int(NINJA_FROG_SIZE * SPRITE_SCALING)
+SPRITE_SIZE = int(NORMAL_SPRITE_SIZE * SPRITE_SCALING)
 
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 500
 SCREEN_TITLE = "Mazes"
 MOVEMENT_SPEED = 4
-
 TILE_EMPTY = 0
 TILE_CRATE = 1
+FROG_WALK_SPEED = 0.8
 
-MAZE_HEIGHT = 41
-MAZE_WIDTH = 41
+MAZE_HEIGHT = 51
+MAZE_WIDTH = 51
 
 MERGE_SPRITES = True
 
-VIEWPORT_MARGIN = 140
+VIEWPORT_MARGIN = 200
+
+coin_sound = arcade.load_sound("coin.ogg")
+
+
+class Coin(arcade.Sprite):
+
+    def __init__(self, filename, sprite_scaling):
+        super().__init__(filename, sprite_scaling)
+        # coin position
+        self.center_x = 0
+        self.center_y = 0
+        # change in position
+        self.change_x = 0
+        self.change_y = 0
+
+    def update(self):
+        self.center_y += self.center_x
+        self.center_y += self.change_y
+
+
+class Frog(arcade.Sprite):
+    def __init__(self, filename):
+        super(Frog, self).__init__(filename, 1.2)
+        self.frog_sprite = None
+        self.center_x = 0
+        self.center_y = 0
+        self.change_x = 0
+        self.center_y = 0
+
+    # update position
+    def update(self):
+        self.center_x += self.center_x
+        self.center_y += self.center_y
+
+    def follow_sprite(self, player_sprite):
+        """move the sprite towards the other sprite"""
+
+        if self.center_y < player_sprite.center_y:
+            self.center_y += min(FROG_WALK_SPEED, player_sprite.center_y - self.center_y)
+
+        elif self.center_y > player_sprite.center_y:
+            self.center_y -= min(FROG_WALK_SPEED, self.center_y - player_sprite.center_y)
+
+        if self.center_x < player_sprite.center_x:
+            self.center_x += min(FROG_WALK_SPEED, player_sprite.center_x - self.center_x)
+
+        elif self.center_x > player_sprite.center_x:
+            self.center_x -= min(FROG_WALK_SPEED, self.center_x - player_sprite.center_x)
 
 
 def _create_grid_with_cells(width, height):
@@ -76,7 +124,7 @@ class MyGame(arcade.Window):
         self.player_list = None
         self.wall_list = None
         self.coin_list = None
-        self.enemy_list = None
+        self.frog_list = None
 
         # Player info
         self.score = 0
@@ -100,7 +148,7 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
-        self.enemy_list = arcade.SpriteList()
+        self.frog_list = arcade.SpriteList()
 
         self.score = 0
 
@@ -131,7 +179,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite("Brown.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite("Purple.png", scale=SPRITE_SCALING)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.width = SPRITE_SIZE * column_count
@@ -139,11 +187,11 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = arcade.Sprite(
-            "walk.png",
+            "shipYellow_manned.png",
             scale=SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
-        # Randomly place the player. If we are in a wall, repeat until we aren't.
+        # randomly place the player
         placed = False
         while not placed:
 
@@ -157,10 +205,24 @@ class MyGame(arcade.Window):
                 # Not in a wall! Success!
                 placed = True
 
+            # coin placed successfully
+            for coin in range(54):
+                coin = Coin("tile000.png", 0.8)
+                coin_placed_right = False
+                while not coin_placed_right:
+                    coin.center_x = random.randrange(SCREEN_WIDTH)
+                    coin.center_y = random.randrange(SCREEN_HEIGHT)
+                    coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
+                    frog_list = arcade.check_for_collision_with_list(coin, self.frog_list)
+                    wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
+                    if len(frog_list) == 0 and len(coin_hit_list) == 0 and len(wall_hit_list) == 0:
+                        coin_placed_right = True
+                        self.coin_list.append(coin)
+
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        self.background_color = arcade.color.AMAZON
+        self.background_color = arcade.color.MANATEE
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
@@ -171,8 +233,14 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
+        # display score
+        # Put the text on the screen.
+        output = f"SCORE: {self.score:.3f}"
+        arcade.draw_text(output,
+                         self.view_left + 20,
+                         SCREEN_HEIGHT - 60 + self.view_bottom,
+                         arcade.color.WHITE, 16)
 
-        # This command has to happen before we start drawing
         self.clear()
 
         # Start timing how long this takes
@@ -182,7 +250,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.player_list.draw()
         self.coin_list.draw()
-        self.enemy_list.draw()
+        self.frog_list.draw()
 
         sprite_count = len(self.wall_list)
 
@@ -206,6 +274,14 @@ class MyGame(arcade.Window):
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
+        # frog
+        frog_sprite = Frog("walk.png")
+        # position
+        frog_sprite.change_x = 500
+        frog_sprite.center_x = 440
+        frog_sprite.change_x += 0.5
+        self.frog_list.append(frog_sprite)
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -228,6 +304,12 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+
+        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        for coin in coins_hit_list:
+            coin.remove_from_sprite_lists()
+            self.score += 1
+            arcade.play_sound(coin_sound)
 
         start_time = timeit.default_timer()
 
