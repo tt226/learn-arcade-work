@@ -281,10 +281,9 @@ class MyGame(arcade.Window):
         # frog
         frog_sprite = Frog("new/walk.png")
         # position
-        frog_sprite.change_x = 500
-        frog_sprite.center_x = 440
-        frog_sprite.change_x += 0.5
-        self.frog_list.append(frog_sprite)
+        frog_sprite.change_x = 200
+        frog_sprite.center_x = 100
+        frog_sprite.change_x += 2.88
         # Score Board
         output = f"Score : {self.score:.3f}"
         arcade.draw_text(output,
@@ -365,6 +364,21 @@ class MyGame(arcade.Window):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
+
+
+
+        if self.score >= 20:
+            self.clear()
+            arcade.draw_text("GAME OVER", start_x=140, color=arcade.color.OCHRE, start_y=350,
+                             font_name="Kenney Rocket Square",
+                             font_size=50, bold=True)
+
+
+        if self.score <= 20:
+            self.clear()
+            arcade.draw_text("YOU LOST \n ¯\_(ツ)_/¯", start_x=210, color=arcade.color.OCHRE, start_y=240,
+                                font_name="Kenney Rocket Square",
+                                font_size=20, bold=True)
 
 
 def main():
