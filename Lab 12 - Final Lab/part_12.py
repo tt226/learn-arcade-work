@@ -22,7 +22,8 @@ MERGE_SPRITES = True
 
 VIEWPORT_MARGIN = 200
 
-coinn_sound = arcade.load_sound("jumping.wav")
+coinn_sound = arcade.load_sound("assets/sounds/jumping.wav")
+game_over = arcade.load_sound("assets/sounds/GameOver.wav")
 
 
 class Coin(arcade.Sprite):
@@ -179,7 +180,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite("Purple.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite("new/Purple.png", scale=SPRITE_SCALING)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.width = SPRITE_SIZE * column_count
@@ -187,7 +188,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.player_sprite = arcade.Sprite(
-            "shipYellow_manned.png",
+            "new/shipYellow_manned.png",
             scale=SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
@@ -207,7 +208,7 @@ class MyGame(arcade.Window):
 
             # coin placed successfully
             for coin in range(80):
-                coin = Coin("tile000.png", 0.8)
+                coin = Coin("new/tile000.png", 0.8)
                 coin_placed_right = False
                 while not coin_placed_right:
                     coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -277,7 +278,7 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
 
         # frog
-        frog_sprite = Frog("walk.png")
+        frog_sprite = Frog("new/walk.png")
         # position
         frog_sprite.change_x = 500
         frog_sprite.center_x = 440
@@ -319,7 +320,9 @@ class MyGame(arcade.Window):
         not_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.frog_list)
         for frog in not_hit_list:
             frog.remove_from_sprite_lists()
-            arcade.load_sound("GameOver.wav")
+            self.score -= 1
+            arcade.draw_rectangle_filled(SCREEN_WIDTH, SCREEN_HEIGHT, 90, 44, arcade.color.CYBER_GRAPE)
+            arcade.play_sound(game_over)
         # Call update on all sprites
         self.physics_engine.update()
         # Track if we need to change the viewport
