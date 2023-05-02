@@ -15,8 +15,8 @@ TILE_EMPTY = 0
 TILE_CRATE = 1
 FROG_WALK_SPEED = 0.8
 
-MAZE_HEIGHT = 51
-MAZE_WIDTH = 51
+MAZE_HEIGHT = 35
+MAZE_WIDTH = 35
 
 MERGE_SPRITES = True
 
@@ -31,11 +31,12 @@ class Coin(arcade.Sprite):
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
         # coin position
-        self.center_x = random.randrange(10 // 5 * SCREEN_WIDTH)
-        self.center_y = random.randrange(10 // 4 * SCREEN_HEIGHT)
+        self.center_x = random.randrange(SCREEN_HEIGHT)
+        self.center_y = random.randrange(SCREEN_WIDTH)
         # change in position
-        self.change_x -= 1
-        self.change_y += 1
+        self.change_x += 5
+        self.change_y += 5
+
 
     def update(self):
         self.center_y += self.center_x
