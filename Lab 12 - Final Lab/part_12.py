@@ -1,399 +1,279 @@
-# itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
-# https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
-# https://kenney.nl/assets/alien-ufo-pack
-
-# source code - citations
-# platform_tutorial
-# https://api.arcade.academy/en/latest/examples/platform_tutorial/step_17.html
-# Maze depth first
-# https://api.arcade.academy/en/development/example_code/how_to_examples/maze_depth_first.html
+# citations
+# player image from: https://craftpix.net/freebies/free-monster-2d-game-items/
+# bullet images and enemy sprite from: https://kenney.nl/assets/space-shooter-extension
+# sound files from: https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
 
 
 import random
 import arcade
-import timeit
+import os
 
-NORMAL_SPRITE_SIZE = 190
-SPRITE_SCALING = 0.25
-SPRITE_SIZE = int(NORMAL_SPRITE_SIZE * SPRITE_SCALING)
+ENEMY_SCALE = 0.4
+BULLET_SCALE = 0.2
 
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 500
-SCREEN_TITLE = "Mazes"
-MOVEMENT_SPEED = 4
-TILE_EMPTY = 0
-TILE_CRATE = 1
-FROG_WALK_SPEED = 0.8
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+SCREEN_TITLE = "space war"
 
-MAZE_HEIGHT = 35
-MAZE_WIDTH = 35
+BULLET_SPEED = 7
+ENEMY_SPEED = 1
 
-MERGE_SPRITES = True
+AMOUNT_OF_BULLET = 5
 
-VIEWPORT_MARGIN = 200
+VERTICAL_MARGIN = 15
+RIGHT_ENEMY_BORDER = SCREEN_WIDTH - VERTICAL_MARGIN
+LEFT_ENEMY_BORDER = VERTICAL_MARGIN
 
-# sounds from ich.io - "Sweet Sounds - by Coffee Bat
-# https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
+# How many pixels to move the enemy down when reversing
+ENEMY_DOWN_AMOUNT = 10
 
-coinn_sound = arcade.load_sound("assets/sounds/jumping.wav")
-game_over = arcade.load_sound("assets/sounds/GameOver.wav")
-
-
-class Coin(arcade.Sprite):
-
-    def __init__(self, filename, sprite_scaling):
-        super().__init__(filename, sprite_scaling)
-        # coin position
-        self.center_x = random.randrange(SCREEN_HEIGHT)
-        self.center_y = random.randrange(SCREEN_WIDTH)
-        # change in position
-        self.change_x += 5
-        self.change_y += 5
-
-    def update(self):
-        self.center_y += self.center_x
-        self.center_y += self.change_y
-
-
-class Frog(arcade.Sprite):
-    def __init__(self, filename):
-        super(Frog, self).__init__(filename, 1.2)
-        self.frog_sprite = None
-        self.center_x = 0
-        self.center_y = 0
-        self.change_x = 0
-        self.center_y = 0
-
-    # update position
-    def update(self):
-        self.center_x += self.center_x
-        self.center_y += self.center_y
-
-    def follow_sprite(self, player_sprite):
-        """move the sprite towards the other sprite"""
-
-        if self.center_y < player_sprite.center_y:
-            self.center_y += min(FROG_WALK_SPEED, player_sprite.center_y - self.center_y)
-
-        elif self.center_y > player_sprite.center_y:
-            self.center_y -= min(FROG_WALK_SPEED, self.center_y - player_sprite.center_y)
-
-        if self.center_x < player_sprite.center_x:
-            self.center_x += min(FROG_WALK_SPEED, player_sprite.center_x - self.center_x)
-
-        elif self.center_x > player_sprite.center_x:
-            self.center_x -= min(FROG_WALK_SPEED, self.center_x - player_sprite.center_x)
-
-
-def _create_grid_with_cells(width, height):
-    # Create a grid with empty cells on odd row/column combinations.
-    grid = []
-    for row in range(height):
-        grid.append([])
-        for column in range(width):
-            if column % 2 == 1 and row % 2 == 1:
-                grid[row].append(TILE_EMPTY)
-            elif column == 0 or row == 0 or column == width - 1 or row == height - 1:
-                grid[row].append(TILE_CRATE)
-            else:
-                grid[row].append(TILE_CRATE)
-    return grid
-
-
-def make_maze_depth_first(maze_width, maze_height):
-    maze = _create_grid_with_cells(maze_width, maze_height)
-
-    w = (len(maze[0]) - 1) // 2
-    h = (len(maze) - 1) // 2
-    vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
-
-    def walk(x: int, y: int):
-        vis[y][x] = 1
-
-        d = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]
-        random.shuffle(d)
-        for (xx, yy) in d:
-            if vis[yy][xx]:
-                continue
-            if xx == x:
-                maze[max(y, yy) * 2][x * 2 + 1] = TILE_EMPTY
-            if yy == y:
-                maze[y * 2 + 1][max(x, xx) * 2] = TILE_EMPTY
-
-            walk(xx, yy)
-
-    walk(random.randrange(w), random.randrange(h))
-
-    return maze
+# Game state
+GAME_OVER = 1
+PLAY_GAME = 0
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
+        # call the parent class initializer
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        super().__init__(width, height, title)
-
-        # Sprite lists
+        # variables that hold sprite lists
         self.player_list = None
-        self.wall_list = None
-        self.coin_list = None
-        self.frog_list = None
-
-        # Player info
-        self.score = 0
+        self.enemy_list = None
+        self.player_bullet_list = None
+        self.enemy_bullet_list = None
+        self.shield_list = None
+        # enemy texture
+        self.enemy_texture = None
+        # set up game
+        self.game_state = PLAY_GAME
+        # player_info
         self.player_sprite = None
+        self.score = 0
+        # enemy movement
+        self.enemy_change_x = -ENEMY_SPEED
+        # hide the cursor
+        self.set_mouse_visible(False)
+        # sounds from itch.io
+        self.hit_sound = arcade.load_sound("sounds/hit.wav")
+        self.bullet_sound = arcade.load_sound("sounds/bullet.ogg")
+        # background
+        self.background = None
 
-        # Physics engine
-        self.physics_engine = None
 
-        # Used to scroll
-        self.view_bottom = 0
-        self.view_left = 0
+    def setup_level_one(self):
 
-        # Time to process
-        self.processing_time = 0
-        self.draw_time = 0
+        self.background = arcade.load_texture("images/stars-night-textured-background.jpg")
+
+        self.enemy_texture = []
+        texture = arcade.load_texture("images/enemy.png", mirrored=True)
+        self.enemy_texture.append(texture)
+
+        # create enemies
+        for x in range(380, 60 * 3 + 380, 60):
+            for y in range(450, 40 * 2 + 450, 40):
+                # enemy image from kenney.nl
+                enemy = arcade.Sprite()
+                enemy.scale = ENEMY_SCALE
+                enemy.texture = self.enemy_texture[0]
+
+                # position the enemy
+                enemy.center_x = x
+                enemy.center_y = y
+
+                # append to the enemy list
+                self.enemy_list.append(enemy)
+
+    def make_shield(self, x_start):
+
+        y_start = 150
+        for x in range(x_start, x_start + 25 * 6, 6):
+            for y in range(y_start,  y_start + 5 * 12, 12):
+                shield_sprite = arcade.SpriteSolidColor(5,  12,  arcade.color.DARK_SLATE_GRAY)
+                shield_sprite.center_x = x
+                shield_sprite.center_y = y
+                self.shield_list.append(shield_sprite)
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
 
-        # Sprite lists
+        self.game_state = PLAY_GAME
+
+        # sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.frog_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.player_bullet_list = arcade.SpriteList()
+        self.enemy_bullet_list = arcade.SpriteList()
+        self.shield_list = arcade.SpriteList(is_static=True)
 
+        # set up the player
         self.score = 0
 
-        # Create the maze
-        maze = make_maze_depth_first(MAZE_WIDTH, MAZE_HEIGHT)
-
-        # Create sprites based on 2D grid
-        if not MERGE_SPRITES:
-            # each grid is a sprite.
-            for row in range(MAZE_HEIGHT):
-                for column in range(MAZE_WIDTH):
-                    if maze[row][column] == 1:
-                        # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
-                        wall = arcade.Sprite("gray.png", scale=SPRITE_SCALING)
-                        wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
-                        wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
-                        self.wall_list.append(wall)
-        else:
-            for row in range(MAZE_HEIGHT):
-                column = 0
-                while column < len(maze):
-                    while column < len(maze) and maze[row][column] == 0:
-                        column += 1
-                    start_column = column
-                    while column < len(maze) and maze[row][column] == 1:
-                        column += 1
-                    end_column = column - 1
-
-                    column_count = end_column - start_column + 1
-                    column_mid = (start_column + end_column) / 2
-                    # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
-                    wall = arcade.Sprite("new/Purple.png", scale=SPRITE_SCALING)
-                    wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
-                    wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
-                    wall.width = SPRITE_SIZE * column_count
-                    self.wall_list.append(wall)
-
-        # Set up the player
-        self.player_sprite = arcade.Sprite(
-            # kenney's UFO pack - https://kenney.nl/assets/alien-ufo-pack
-            "new/shipYellow_manned.png",
-            scale=SPRITE_SCALING)
+        # sprite from craftpix.net
+        self.player_sprite = arcade.Sprite("images/player.png", 0.2)
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 40
         self.player_list.append(self.player_sprite)
 
-        # randomly place the player
-        placed = False
-        while not placed:
+        # make the shield
+        for x in range(75, 800, 200):
+            self.make_shield(x)
 
-            # Randomly position
-            self.player_sprite.center_x = random.randrange(MAZE_WIDTH * SPRITE_SIZE)
-            self.player_sprite.center_y = random.randrange(MAZE_HEIGHT * SPRITE_SIZE)
-
-            # Are we in a wall?
-            walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
-            if len(walls_hit) == 0:
-                # Not in a wall! Success!
-                placed = True
-
-            # coin placed successfully
-            for coin in range(80):
-                # itch.io - Pixel Adventure - https://pixelfrog-assets.itch.io/pixel-adventure-1
-                coin = Coin("new/tile000.png", 0.8)
-                coin_placed_right = False
-                while not coin_placed_right:
-                    coin.center_x = random.randrange(SCREEN_WIDTH)
-                    coin.center_y = random.randrange(SCREEN_HEIGHT)
-                    # checking for collision
-                    coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
-                    frog_list = arcade.check_for_collision_with_list(coin, self.frog_list)
-                    wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
-                    if len(frog_list) == 0 and len(coin_hit_list) == 0 and len(wall_hit_list) == 0:
-                        coin_placed_right = True
-                        # add
-                        self.coin_list.append(coin)
-
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
-
-        # Set the background color
-        self.background_color = arcade.color.JUNGLE_GREEN
-
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
+        self.setup_level_one()
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
-        # display score
-        # Put the text on the screen.
-        output = f"SCORE: {self.score}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 60 + self.view_bottom,
-                         arcade.color.WHITE, 16)
 
+
+        # this command has to happen before we start drawing
         self.clear()
 
-        # Start timing how long this takes
-        draw_start_time = timeit.default_timer()
+        # draw the background texture
+        arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
 
-        # Draw all the sprites.
-        self.wall_list.draw()
+
+        # draw all the sprites.
+        self.enemy_list.draw()
+        self.player_bullet_list.draw()
+        self.enemy_bullet_list.draw()
+        self.shield_list.draw()
         self.player_list.draw()
-        self.coin_list.draw()
-        self.frog_list.draw()
+        # add score
+        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
 
-        sprite_count = len(self.wall_list)
+        # game over
+        if self.game_state == GAME_OVER:
+            arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 24)
+            self.set_mouse_visible(True)
 
-        output = f"Sprite Count: {sprite_count}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 20 + self.view_bottom,
-                         arcade.color.WHITE, 16)
 
-        output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 40 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+    def on_mouse_motion(self, x, y, dx, dy):
 
-        output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 60 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        if self.game_state == GAME_OVER:
+            return
+        self.player_sprite.center_x = x
 
-        self.draw_time = timeit.default_timer() - draw_start_time
+    def on_mouse_press(self, x, y, button, modifiers):
 
-        # frog
-        frog_sprite = Frog("new/walk.png")
-        # position
-        frog_sprite.change_x = 200
-        frog_sprite.center_x = 100
-        frog_sprite.change_x += 2.88
-        # Score Board
-        output = f"Score : {self.score:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 80 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        if len(self.player_bullet_list) < AMOUNT_OF_BULLET:
+            # bullet sound
+            arcade.play_sound(self.bullet_sound)
 
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+            # Create a bullet
+            bullet = arcade.Sprite("images/player_bullet.png", BULLET_SCALE)
 
-        if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            # add speed
+            bullet.change_y = BULLET_SPEED
 
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+            # position the bullet
+            bullet.center_x = self.player_sprite.center_x
+            bullet.bottom = self.player_sprite.top
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+            # append to the list
+            self.player_bullet_list.append(bullet)
 
-    def on_update(self, delta_time, start_time=None):
-        """ Movement and game logic """
-        for frog in self.frog_list:
-            frog.follow_sprite(self.player_sprite)
+    def update_enemies(self):
 
-        # sprites that connect with each other
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
-        for coin in hit_list:
-            coin.remove_from_sprite_lists()
-            self.score += 1
-            arcade.play_sound(coinn_sound)
+        # move the enemy up and down
+        for enemy in self.enemy_list:
+            enemy.center_x += self.enemy_change_x
 
-        not_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.frog_list)
-        for frog in not_hit_list:
-            frog.remove_from_sprite_lists()
-            self.score -= 1
-            arcade.draw_rectangle_filled(SCREEN_WIDTH, SCREEN_HEIGHT, 90, 44, arcade.color.CYBER_GRAPE)
-            arcade.play_sound(game_over)
-        # Call update on all sprites
-        self.physics_engine.update()
-        # Track if we need to change the viewport
-        changed = False
+        move_down = False
+        for enemy in self.enemy_list:
+            if enemy.right > RIGHT_ENEMY_BORDER and self.enemy_change_x > 0:
+                self.enemy_change_x *= -1
+                move_down = True
+            if enemy.left < LEFT_ENEMY_BORDER and self.enemy_change_x < 0:
+                self.enemy_change_x *= -1
+                move_down = True
 
-        # Scroll left
-        left_side = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_side:
-            self.view_left -= left_side - self.player_sprite.left
-            changed = True
+        if move_down:
+            for enemy in self.enemy_list:
+                # move the enemy down
+                enemy.center_y -= ENEMY_DOWN_AMOUNT
 
-        # Scroll right
-        right_side = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_side:
-            self.view_left += self.player_sprite.right - right_side
-            changed = True
+    def allow_enemies_to_fire(self):
 
-        # Scroll up
-        top_side = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_side:
-            self.view_bottom += self.player_sprite.top - top_side
-            changed = True
+        fire = []
+        for enemy in self.enemy_list:
+            chance = 6 + len(self.enemy_list) * 6
+            if random.randrange(chance) == 0 and enemy.center_x not in fire:
+                bullet = arcade.Sprite("images/enemy_bullet.png", 2)
+                # change the angle
+                bullet.angle = 180
+                # set the speed
+                bullet.change_y = -BULLET_SPEED
+                # position
+                bullet.center_x = enemy.center_x
+                bullet.top = enemy.bottom
+                self.enemy_bullet_list.append(bullet)
+            # add to the list
+            fire.append(enemy.center_x)
 
-        # Scroll down
-        top_side = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < top_side:
-            self.view_bottom -= top_side - self.player_sprite.bottom
-            changed = True
+    def process_enemy_bullets(self):
 
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        # Move the bullets
+        self.enemy_bullet_list.update()
+        # Loop through each bullet
+        for bullet in self.enemy_bullet_list:
+            # check for collision with shield area
+            hit_list = arcade.check_for_collision_with_list(bullet, self.shield_list)
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+                for shield in hit_list:
+                    shield.remove_from_sprite_lists()
+                continue
+            if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_bullet_list):
+                self.game_state = GAME_OVER
 
-        if self.score >= 20:
-            self.clear()
-            arcade.draw_text("GAME OVER", start_x=140, color=arcade.color.OCHRE, start_y=350,
-                             font_name="Kenney Rocket Square",
-                             font_size=50, bold=True)
+            # get rid of any bullet that flies off the screen
+            if bullet.top < 0:
+                bullet.remove_from_sprite_lists()
 
-        if self.score <= 20:
-            self.clear()
-            arcade.draw_text("YOU LOST \n ¯\_(ツ)_/¯", start_x=210, color=arcade.color.OCHRE, start_y=240,
-                             font_name="Kenney Rocket Square",
-                             font_size=20, bold=True)
+    def process_player_bullets(self):
+
+        self.player_bullet_list.update()
+
+        # Loop through each bullet
+        for bullet in self.player_bullet_list:
+
+            # check if a bullet hit the shield
+            hit_list = arcade.check_for_collision_with_list(bullet, self.shield_list)
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+                for shield in hit_list:
+                    shield.remove_from_sprite_lists()
+                continue
+            # check if a bullet hit an enemy
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+
+            # remove the enemy and add to the score
+            for enemy in hit_list:
+                enemy.remove_from_sprite_lists()
+                self.score += 1
+                arcade.play_sound(self.hit_sound)
+
+            # remove any bullets that fly off the screen
+            if bullet.bottom > SCREEN_HEIGHT:
+                bullet.remove_from_sprite_lists()
+
+    def on_update(self, delta_time):
+
+        if self.game_state == GAME_OVER:
+            return
+
+        self.update_enemies()
+        self.allow_enemies_to_fire()
+        self.process_enemy_bullets()
+        self.process_player_bullets()
+
+        if len(self.enemy_list) == 0:
+            self.setup_level_one()
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = MyGame()
     window.setup()
     arcade.run()
 

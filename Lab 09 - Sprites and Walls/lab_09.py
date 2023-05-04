@@ -28,7 +28,6 @@ CAMERA_SPEED = 0.1
 PLAYER_MOVEMENT_SPEED = 5.1
 
 # coin sound
-coin_sound = arcade.load_sound("coinsound.ogg")
 
 
 class Coin(arcade.Sprite):
@@ -107,62 +106,6 @@ class MyGame(arcade.Window):
                 wall.center_y = y * 2.1
                 self.wall_list.append(wall)
 
-        for x in range(160, 1700, 50):
-            for y in range(160, 1700, 10):
-                wall = arcade.Sprite("tileYellow_37.png", SPRITE_SCALING)
-                wall.center_y = 0
-                wall.center_x = x * 1.6
-                self.wall_list.append(wall)
-
-        for x in range(160, 1700, 50):
-            for y in range(160, 1700, 10):
-                wall = arcade.Sprite("particleYellow_7.png", SPRITE_SCALING)
-                wall.center_y = 3200
-                wall.center_x = x * 1.6
-                self.wall_list.append(wall)
-
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 740
-            wall.center_y = x // 2 + 12
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 1060
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 1380
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 1700
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 2020
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 2020
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
-
-        for x in range(100, 2000, 200):
-            wall = arcade.Sprite("dead_fish.png", SPRITE_SCALING)
-            wall.center_x = 2330
-            wall.center_y = x // 2
-            self.wall_list.append(wall)
 
 
         # coin-fishes
@@ -243,7 +186,6 @@ class MyGame(arcade.Window):
         for coin in coins_hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
-            arcade.play_sound(coin_sound)
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
