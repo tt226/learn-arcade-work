@@ -63,10 +63,11 @@ class MyGame(arcade.Window):
 
 
     def setup_level_one(self):
-
+        # image from freepik.com
         self.background = arcade.load_texture("images/stars-night-textured-background.jpg")
 
         self.enemy_texture = []
+        # image from kenney.nl
         texture = arcade.load_texture("images/enemy.png", mirrored=True)
         self.enemy_texture.append(texture)
 
@@ -159,6 +160,7 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.bullet_sound)
 
             # Create a bullet
+            # image from kenney.nl
             bullet = arcade.Sprite("images/player_bullet.png", BULLET_SCALE)
 
             # add speed
@@ -197,6 +199,7 @@ class MyGame(arcade.Window):
         for enemy in self.enemy_list:
             chance = 6 + len(self.enemy_list) * 6
             if random.randrange(chance) == 0 and enemy.center_x not in fire:
+                # image from kenney.nl
                 bullet = arcade.Sprite("images/enemy_bullet.png", 2)
                 # change the angle
                 bullet.angle = 180
