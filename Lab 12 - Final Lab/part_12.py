@@ -6,7 +6,6 @@
 
 import random
 import arcade
-import os
 
 ENEMY_SCALE = 0.4
 BULLET_SCALE = 0.2
@@ -24,10 +23,10 @@ VERTICAL_MARGIN = 15
 RIGHT_ENEMY_BORDER = SCREEN_WIDTH - VERTICAL_MARGIN
 LEFT_ENEMY_BORDER = VERTICAL_MARGIN
 
-# How many pixels to move the enemy down when reversing
+# pixels enemy moving down by
 ENEMY_DOWN_AMOUNT = 10
 
-# Game state
+# game state
 GAME_OVER = 1
 PLAY_GAME = 0
 
@@ -143,8 +142,13 @@ class MyGame(arcade.Window):
 
         # game over
         if self.game_state == GAME_OVER:
-            arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 24)
-            self.set_mouse_visible(True)
+            if self.score >= 40:
+                arcade.draw_text("WAY TO GO \n'°˖✧◝(⁰▿⁰)◜✧˖°", start_x=250, color=arcade.color.OCHRE, start_y=300,
+                             font_name="Kenney Rocket Square",
+                             font_size=20, bold=True)
+            else:
+                arcade.draw_text("GAME OVER \n ¯\_(ツ)_/¯", 250, 300, arcade.color.OCHRE, 24)
+                self.set_mouse_visible(True)
 
 
     def on_mouse_motion(self, x, y, dx, dy):
