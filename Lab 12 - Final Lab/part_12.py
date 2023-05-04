@@ -142,8 +142,8 @@ class MyGame(arcade.Window):
 
         # game over
         if self.game_state == GAME_OVER:
-            if self.score >= 40:
-                arcade.draw_text("WAY TO GO \n'°˖✧◝(⁰▿⁰)◜✧˖°", start_x=250, color=arcade.color.OCHRE, start_y=300,
+            if self.score >= 30:
+                arcade.draw_text("HIGH SCORE \n'°˖✧◝(⁰▿⁰)◜✧˖°", start_x=250, color=arcade.color.WHITE, start_y=300,
                              font_name="Kenney Rocket Square",
                              font_size=20, bold=True)
             else:
