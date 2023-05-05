@@ -80,8 +80,8 @@ class GameView(arcade.View):
         # sounds from itch.io
         self.hit_sound = arcade.load_sound("sounds/hit.wav")
         self.bullet_sound = arcade.load_sound("sounds/bullet.ogg")
-        # sound from https://www.zedge.net/find/ringtones/
-        # original sound belongs to the show One Piece
+        # sound from zedge.net/ringtones
+        # the sound belongs to the show One Piece - Toei Animations!
         self.kill_sound = arcade.load_sound("sounds/kill.wav")
         # background
         self.background = None
