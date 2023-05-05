@@ -2,7 +2,7 @@
 # player image from: https://craftpix.net/freebies/free-monster-2d-game-items/
 # bullet images and enemy sprite from: https://kenney.nl/assets/space-shooter-extension
 # sound files from: https://benjaminno.itch.io/sweet-sounds-sfx-pack?download
-
+# more in the comments
 
 import random
 import arcade
